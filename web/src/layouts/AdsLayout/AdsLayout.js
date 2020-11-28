@@ -1,17 +1,19 @@
-import { Link, routes } from '@redwoodjs/router'
+import { routes, navigate } from '@redwoodjs/router'
 import { Flash } from '@redwoodjs/web'
+import Link from 'src/components/core/Link'
 
 const AdsLayout = (props) => {
   return (
     <div className="rw-scaffold">
       <Flash timeout={1000} />
       <header className="rw-header">
-        <h1 className="rw-heading rw-heading-primary">
-          <Link to={routes.ads()} className="rw-link">
+        <Link onClick={() => navigate(routes.ads())}>
+          <h1 className="rw-heading rw-heading-primary">
             Ethereum Advertisement Auction
-          </Link>
-        </h1>
-        <Link to={routes.newAd()} className="rw-button rw-button-green">
+          </h1>
+        </Link>
+
+        <Link onClick={() => navigate(routes.newAd())}>
           <div className="rw-button-icon">+</div> New Ad
         </Link>
       </header>
