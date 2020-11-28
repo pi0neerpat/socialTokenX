@@ -71,18 +71,14 @@ const AdsList = ({ ads }) => {
 
   return (
     <div>
-      <Row gap="10px">
-        {ads.map((ad) => (
-          <Column>
-            <Container>
-              <h2>{truncate(ad.text)}</h2>
-              <Link onClick={() => navigate(routes.ad({ id: ad.id }))}>
-                Replace for {(Number(ad.amount) * 1.1).toFixed(5)} ETH
-              </Link>
-            </Container>
-          </Column>
-        ))}
-      </Row>
+      {ads.map((ad) => (
+        <Container>
+          <h2>{truncate(ad.text)}</h2>
+          <Link onClick={() => navigate(routes.ad({ id: ad.id }))}>
+            Replace for {(Number(ad.amount) * 1.1).toFixed(5)} ETH
+          </Link>
+        </Container>
+      ))}
     </div>
   )
 }
