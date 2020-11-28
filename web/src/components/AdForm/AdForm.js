@@ -54,6 +54,25 @@ const AdForm = (props) => {
         />
         <FieldError name="owner" className="rw-field-error" />
 
+        {props.isEdit && (
+          <>
+            <Label
+              name="amount"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Amount
+            </Label>
+            <TextField
+              name="amount"
+              defaultValue={props.ad?.amount}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ required: true }}
+            />
+            <FieldError name="amount" className="rw-field-error" />
+          </>
+        )}
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
             Save

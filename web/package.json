@@ -13,6 +13,8 @@
     ]
   },
   "dependencies": {
+    "@ethersproject/providers": "^5.0.17",
+    "@ethersproject/units": "^5.0.8",
     "@redwoodjs/forms": "^0.21.0",
     "@redwoodjs/router": "^0.21.0",
     "@redwoodjs/web": "^0.21.0",

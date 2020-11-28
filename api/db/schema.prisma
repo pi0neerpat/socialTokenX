@@ -14,4 +14,5 @@ model Ad {
   id    Int     @id @default(autoincrement())
   text  String
   owner String
+  amount String  @default("0")
 }

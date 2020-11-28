@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@ethersproject/providers": "^5.0.4",
     "@redwoodjs/api": "^0.21.0"
   }
 }
