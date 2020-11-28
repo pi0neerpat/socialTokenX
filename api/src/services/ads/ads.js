@@ -47,7 +47,9 @@ export const updateAd = async ({ id, input }) => {
 }
 
 export const deleteAd = ({ id }) => {
-  return db.ad.delete({
-    where: { id },
-  })
+  return new Error(`Only admins can do this!`)
+
+  // return db.ad.delete({
+  //   where: { id },
+  // })
 }
