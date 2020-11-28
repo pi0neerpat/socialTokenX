@@ -28,7 +28,7 @@ export const updateAd = async ({ id, input }) => {
     })
 
     const { amount: adAmount } = ad
-    if (Number(adAmount) > Number(amount))
+    if (Number(adAmount) >= Number(amount))
       return new Error('Amount is too small')
     // const receipt = await walletlessProvider.waitForTransaction(hash)
     // console.log(receipt)

@@ -55,7 +55,9 @@ export const Success = ({ ad }) => {
     })
     if (error2) return console.log(error2)
     const { hash } = tx
-    updateAd({ variables: { id, input: { owner, text, hash, amount } } })
+    updateAd({
+      variables: { id, input: { owner: walletAddress, text, hash, amount } },
+    })
   }
 
   return (

@@ -66,6 +66,10 @@ const Ad = ({ ad }) => {
               <th>Owner</th>
               <td>{ad.owner}</td>
             </tr>
+            <tr>
+              <th>Last purchase amount</th>
+              <td>{ad.amount} ETH</td>
+            </tr>
           </tbody>
         </table>
       </div>

@@ -38,21 +38,25 @@ const AdForm = (props) => {
         />
         <FieldError name="text" className="rw-field-error" />
 
-        <Label
-          name="owner"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Owner
-        </Label>
-        <TextField
-          name="owner"
-          defaultValue={props.ad?.owner}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-        <FieldError name="owner" className="rw-field-error" />
+        {!props.isEdit && (
+          <>
+            <Label
+              name="owner"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Owner
+            </Label>
+            <TextField
+              name="owner"
+              defaultValue={props.ad?.owner}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ required: true }}
+            />
+            <FieldError name="owner" className="rw-field-error" />
+          </>
+        )}
 
         {props.isEdit && (
           <>

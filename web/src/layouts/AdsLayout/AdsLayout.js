@@ -8,7 +8,7 @@ const AdsLayout = (props) => {
       <header className="rw-header">
         <h1 className="rw-heading rw-heading-primary">
           <Link to={routes.ads()} className="rw-link">
-            Ads
+            Ethereum Advertisement Auction
           </Link>
         </h1>
         <Link to={routes.newAd()} className="rw-button rw-button-green">
