@@ -1,7 +1,6 @@
 pragma solidity ^0.7.1;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/GSN/Context.sol";
 
 import {
   ISuperfluid,
@@ -10,9 +9,8 @@ import {
   SuperAppDefinitions,
   ISuperAgreement } from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol";
 import "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IConstantFlowAgreementV1.sol";
-import "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IInstantDistributionAgreementV1.sol";
 
-contract Emanator is Context, ERC20, ISuperApp {
+contract Emanator is ERC20, ISuperApp {
   using SafeMath for uint256;
 
   address payable public creator;
