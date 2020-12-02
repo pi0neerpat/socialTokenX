@@ -33,27 +33,27 @@ contract SocialTokenX is ERC20, ISuperApp {
 
       uint256 configWord =
             SuperAppDefinitions.TYPE_APP_FINAL |
-            SuperAppDefinitions.BEFORE_AGREEMENT_CREATED_NOOP |
+            // SuperAppDefinitions.BEFORE_AGREEMENT_CREATED_NOOP |
             SuperAppDefinitions.BEFORE_AGREEMENT_UPDATED_NOOP |
             SuperAppDefinitions.BEFORE_AGREEMENT_TERMINATED_NOOP;
 
       host.registerApp(configWord);
   }
 
-    // function beforeAgreementCreated(
-    //     ISuperToken _tokenX,
-    //     bytes calldata _ctx,
-    //     address _agreementClass,
-    //     bytes32 agreementId,
-    //     bytes calldata /*cbdata*/
-    // )
-    //     external
-    //     onlyExpected(_tokenX, _agreementClass)
-    //     onlyHost
-    //     returns (bytes memory)
-    // {
-    //     // return _bid(_ctx, _tokenX, agreementId);
-    // }
+    function beforeAgreementCreated(
+        ISuperToken _tokenX,
+        bytes calldata _ctx,
+        address _agreementClass,
+        bytes32 agreementId,
+        bytes calldata /*cbdata*/
+    )
+        external
+        onlyExpected(_tokenX, _agreementClass)
+        onlyHost
+        returns (bytes memory)
+    {
+        // return _bid(_ctx, _tokenX, agreementId);
+    }
 
     function afterAgreementCreated(
         ISuperToken _tokenX,

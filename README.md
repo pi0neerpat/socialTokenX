@@ -18,6 +18,20 @@
 
 > A Superfluid-based social token experiment
 
+## About
+
+This is a "Native" Super Token, which means it does not have an underlying token. For example DAIx is not a Native token, since it is a wrapped version of DAI. Thus a Native Super Token can never be un-wrapped, and is only available within the SuperFluid ecosystem.
+
+That said, Native tokens are also ERC20 at their core, so there is no reason they would not be compatible with any DeFi application.
+
+_Advantages of a Native Super Token_:
+
+- No need to "wrap" before using Constant Flow Agreements, IDAs, etc
+
+_Disadvantages of a Native Super Token_:
+
+- It has not inherent value, so you must design your own tokenomics.
+
 ## Prerequisites
 
 - node >=12
