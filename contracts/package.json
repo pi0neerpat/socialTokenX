@@ -1,7 +1,7 @@
 {
-  "name": "emanator-contracts",
+  "name": "socialTokenX-contracts",
   "version": "1.0.0",
-  "description": "Flow lottery - a superfluid SuperApp demo",
+  "description": "A Superfluid-based social token experiment",
   "files": "/build/contracts/*.json",
   "scripts": {
     "build": "truffle compile --all",
@@ -17,9 +17,10 @@
     "@openzeppelin/contracts": "3.2.1-solc-0.7",
     "@openzeppelin/test-helpers": "^0.5.7",
     "@superfluid-finance/ethereum-contracts": "^0.1.2-preview-20201014-fix5",
-    "@truffle/contract": "^4.2.25",
-    "@truffle/hdwallet-provider": "^1.1.0",
+    "@truffle/contract": "^4.3.0",
+    "@truffle/hdwallet-provider": "^1.2.0",
     "dotenv": "^8.2.0",
     "truffle": "^5.1.48"
-  }
+  },
+  "dependencies": {}
 }

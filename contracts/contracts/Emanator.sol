@@ -173,7 +173,7 @@ contract Emanator is ERC721, IERC721Receiver, Context, DSMath, ISuperApp {
       require(bidAmount > _auction.highBid, "you must bid more than the current high bid");
       uint perSecBid = bidAmount / winLength;
 
-      // Delete current high bidder's flow 
+      // Delete current high bidder's flow
       if (_auction.highBid > 0){
          host.callAgreement(
             cfa,
@@ -187,9 +187,9 @@ contract Emanator is ERC721, IERC721Receiver, Context, DSMath, ISuperApp {
           );
         }
 
-        // Create new flow to auction from bidder 
+        // Create new flow to auction from bidder
         host.callAgreement(
-            cfa, 
+            cfa,
             abi.encodeWithSelector(
                 cfa.createFlow.selector,
                 tokenX,
@@ -433,4 +433,4 @@ contract Emanator is ERC721, IERC721Receiver, Context, DSMath, ISuperApp {
 //         _;
 //     }
 
-//  }
+ }

@@ -1,24 +1,61 @@
-# Redwood
+<h1 align="center">Welcome to personalTokenX 👋</h1>
+<p>
+  <img src="https://img.shields.io/badge/node-%3E%3D12-blue.svg" />
+  <img src="https://img.shields.io/badge/yarn-%3E%3D1.15-blue.svg" />
+  <a href="https://github.com/pi0neerpat/personalTokenX" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="https://twitter.com/pi0neerpat" target="_blank">
+    <img alt="Twitter: pi0neerpat" src="https://img.shields.io/twitter/follow/pi0neerpat.svg?style=social" />
+  </a>
+</p>
 
-> **WARNING:** RedwoodJS software has not reached a stable version 1.0 and should not be considered suitable for production use. In the "make it work; make it right; make it fast" paradigm, Redwood is in the later stages of the "make it work" phase.
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-## Getting Started
-- [Tutorial](https://redwoodjs.com/tutorial/welcome-to-redwood): getting started and complete overview guide.
-- [Docs](https://redwoodjs.com/docs/introduction): using the Redwood Router, handling assets and files, list of command-line tools, and more.
-- [Redwood Community](https://community.redwoodjs.com): get help, share tips and tricks, and collaborate on everything about RedwoodJS.
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 
-### Setup
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-We use Yarn as our package manager. To get the dependencies installed, just do this in the root directory:
+> A Superfluid-based social token experiment
 
-```terminal
+## Prerequisites
+
+- node >=12
+
+- yarn >=1.15
+
+## Install
+
+```sh
 yarn install
 ```
 
-### Fire it up
+## Build the contracts
 
-```terminal
-yarn redwood dev
+```bash
+cd contracts
+yarn build
 ```
 
-Your browser should open automatically to `http://localhost:8910` to see the web app. Lambda functions run on `http://localhost:8911` and are also proxied to `http://localhost:8910/.redwood/functions/*`. 
+## Run the app
+
+```bash
+# in root
+yarn rw dev
+```
+
+## Author
+
+👤 **Patrick Gallagher**
+
+- Website: https://patrickgallagher.dev
+  - Twitter: [@pi0neerpat](https://twitter.com/pi0neerpat)
+  - GitHub: [@pi0neerpat](https://github.com/pi0neerpat)
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+---
+
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
