@@ -22,7 +22,8 @@ contract SocialTokenX is ERC20, ISuperApp {
   constructor(
       ISuperfluid host,
       IConstantFlowAgreementV1 cfa,
-      ISuperToken acceptedToken
+      ISuperToken acceptedToken,
+      uint256 totalSupply
       )
       ERC20 ("SocialTokenX", "STX")
       {
@@ -42,6 +43,9 @@ contract SocialTokenX is ERC20, ISuperApp {
           // SuperAppDefinitions.BEFORE_AGREEMENT_TERMINATED_NOOP;
 
       _host.registerApp(configWord);
+
+      _mint(address(this), totalSupply);
+      _transfer(address(this),msg.sender, 1000000);
   }
 
 /**************************************************************************
@@ -59,9 +63,9 @@ contract SocialTokenX is ERC20, ISuperApp {
          virtual
          override
          returns (bytes memory /*cbdata*/)
-         {
-             revert("Unsupported callback - Before Agreement Created");
-         }
+     {
+         revert("Unsupported callback - Before Agreement Created");
+     }
 
       function afterAgreementCreated(
         ISuperToken _superToken,
@@ -92,6 +96,7 @@ contract SocialTokenX is ERC20, ISuperApp {
     {
         revert("Unsupported callback - Before Agreement updated");
     }
+
     function afterAgreementUpdated(
         ISuperToken _superToken,
         bytes calldata _ctx,
