@@ -15,7 +15,7 @@ contract('SocialTokenX', (accounts) => {
   }
 
   const ZERO_ADDRESS = '0x' + '0'.repeat(40)
-  const FLOW_RATE = toWad(10).div(toBN(3600 * 24 * 30)) // (10/mo)
+  const FLOW_RATE = toWad(1).div(toBN(3600 * 24 * 30)) // (1/mo)
   const TOTAL_SUPPLY = toWad(100000000)
 
   accounts = accounts.slice(0, 4)
@@ -27,7 +27,7 @@ contract('SocialTokenX', (accounts) => {
   let daix
   let app
 
-  beforeEach(async function () {
+  before(async function () {
     await deployFramework(errorHandler)
 
     sf = new SuperfluidSDK.Framework({ web3Provider: web3.currentProvider })
@@ -129,7 +129,7 @@ contract('SocialTokenX', (accounts) => {
   // })
 
   it('can create streams', async () => {
-    await printRealtimeBalance('Bob', bob)
+    await printRealtimeBalance('Carol', carol)
     await sf.host.callAgreement(
       sf.agreements.cfa.address,
       sf.agreements.cfa.contract.methods
@@ -139,12 +139,30 @@ contract('SocialTokenX', (accounts) => {
         from: carol,
       }
     )
-    // await traveler.advanceTimeAndBlock(TEST_TRAVEL_TIME);
-    // await sf.host.callAgreement(
-    //     sf.agreements.cfa.address,
-    //     sf.agreements.cfa.contract.methods.deleteFlow(daix.address,alice,app.address,"0x").encodeABI(), {
-    //         from: admin
-    //     }
-    // );
+    await printRealtimeBalance('Carol', carol)
+  })
+
+  it('can returns tokens for sending daiX', async () => {
+    await printRealtimeBalance('Carol', carol)
+    await sf.host.callAgreement(
+      sf.agreements.cfa.address,
+      sf.agreements.cfa.contract.methods
+        .createFlow(daix.address, app.address, FLOW_RATE.toString(), '0x')
+        .encodeABI(),
+      {
+        from: carol,
+      }
+    )
+    await traveler.advanceTimeAndBlock(TEST_TRAVEL_TIME)
+    await sf.host.callAgreement(
+      sf.agreements.cfa.address,
+      sf.agreements.cfa.contract.methods
+        .deleteFlow(daix.address, alice, app.address, '0x')
+        .encodeABI(),
+      {
+        from: admin,
+      }
+    )
+    await printRealtimeBalance('Carol', carol)
   })
 })
