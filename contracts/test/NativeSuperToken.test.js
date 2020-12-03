@@ -109,14 +109,19 @@ contract('NativeSuperToken', (accounts) => {
   // }
 
   it('will deploy', async () => {
-    assert.equal((await app.totalSupply()).toString(), totalSupply)
-    assert.equal((await app.balanceOf(owner)).toString(), '1000000')
-    // TODO : write logic to check the expected distribution split
+    assert.equal(
+      (await app.totalSupply.call()).toString(),
+      TOTAL_SUPPLY.toString()
+    )
   })
 
   it('is transferrable', async () => {
-    assert.equal((await app.totalSupply()).toString(), '1000000')
-    // TODO : write logic to check the expected distribution split
+    console.log((await app.balanceOf(creator)).toString())
+    await web3tx(app.transfer, `Send 100 to Bob`)(bob, 100, {
+      from: creator,
+    })
+    console.log((await app.balanceOf(creator)).toString())
+    assert.equal((await app.balanceOf(bob)).toString(), toWad(100).toString())
   })
   //
   // it('transfers 70% of the second auction revenue to the creator and 30% to the winner of auction 1', async () => {

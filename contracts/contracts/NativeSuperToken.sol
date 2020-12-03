@@ -10,7 +10,7 @@ import {
   ISuperAgreement } from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol";
 import "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IConstantFlowAgreementV1.sol";
 
-contract SocialTokenX is ERC20, ISuperApp {
+contract NativeSuperToken is ERC20, ISuperApp {
   using SafeMath for uint256;
 
   address payable public creator;
@@ -45,7 +45,7 @@ contract SocialTokenX is ERC20, ISuperApp {
       _host.registerApp(configWord);
 
       _mint(address(this), totalSupply);
-      _transfer(address(this),msg.sender, 1000000);
+      _transfer(address(this),msg.sender, 1000000*1**18);
   }
 
 /**************************************************************************

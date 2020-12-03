@@ -6,7 +6,7 @@
   "scripts": {
     "build": "truffle compile --all",
     "pretest": "cp ../node_modules/@superfluid-finance/ethereum-contracts/build/contracts/* build/contracts/",
-    "test": "truffle test",
+    "test": "nodemon --watch ./contracts --watch ./test --exec truffle test",
     "deploy": "npm run build && RELEASE_VERSION=0.1.2-preview-20201014 npx truffle --network goerli exec scripts/deploy.js",
     "getTokens": "RELEASE_VERSION=0.1.2-preview-20201014 npx truffle --network goerli exec scripts/getTokens.js"
   },
@@ -20,6 +20,7 @@
     "@truffle/contract": "^4.3.0",
     "@truffle/hdwallet-provider": "^1.2.0",
     "dotenv": "^8.2.0",
+    "nodemon": "^2.0.6",
     "truffle": "^5.1.48"
   },
   "dependencies": {}
