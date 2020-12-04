@@ -64,7 +64,7 @@ contract('SocialTokenX', (accounts) => {
 
     // Social Token wrapper
     const stxWrapper = await sf.getERC20Wrapper(app)
-    stx = await sf.contracts.ISuperToken.at(daixWrapper.wrapperAddress)
+    stx = await sf.contracts.ISuperToken.at(stxWrapper.wrapperAddress)
 
     for (let i = 1; i < accounts.length; ++i) {
       await web3tx(dai.approve, `Account ${i} approves daix`)(
@@ -91,7 +91,7 @@ contract('SocialTokenX', (accounts) => {
     } = await daix.realtimeBalanceOfNow.call(account)
     const {
       availableBalance: stxBalance,
-    } = await daix.realtimeBalanceOfNow.call(account)
+    } = await stx.realtimeBalanceOfNow.call(account)
     return console.log(
       `${label} daix rtb: ${wad4human(daixBalance)}  stx rtb: ${wad4human(
         stxBalance
@@ -131,13 +131,17 @@ contract('SocialTokenX', (accounts) => {
       (await app.totalSupply.call()).toString(),
       TOTAL_SUPPLY.toString()
     )
+    assert.equal(
+      (await stx.totalSupply.call()).toString(),
+      TOTAL_SUPPLY.toString()
+    )
   })
 
   it('is transferrable', async () => {
-    await web3tx(app.transfer, `Send 100 to Bob`)(bob, 100, {
+    await web3tx(stx.transfer, `Send 100 to Bob`)(bob, 100, {
       from: creator,
     })
-    assert.equal((await app.balanceOf(bob)).toString(), 100)
+    assert.equal((await stx.balanceOf(bob)).toString(), 100)
   })
 
   it('can turn on flow', async () => {

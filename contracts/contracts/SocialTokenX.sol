@@ -18,6 +18,7 @@ contract SocialTokenX is ERC20, ISuperApp {
   ISuperfluid private _host;
   IConstantFlowAgreementV1 private _cfa;
   ISuperToken private _acceptedToken;
+  ISuperToken private _stx;
 
   constructor(
       ISuperfluid host,
@@ -25,7 +26,7 @@ contract SocialTokenX is ERC20, ISuperApp {
       ISuperToken acceptedToken,
       uint256 totalSupply
       )
-      ERC20 ("SocialTokenX", "STX")
+      ERC20 ("SocialToken", "ST")
       {
       assert(address(host) != address(0));
       assert(address(cfa) != address(0));
@@ -42,9 +43,21 @@ contract SocialTokenX is ERC20, ISuperApp {
           SuperAppDefinitions.BEFORE_AGREEMENT_TERMINATED_NOOP;
 
       _host.registerApp(configWord);
+      _host.createERC20Wrapper(
+          IERC20(address(this)),
+          18,
+          "Super SocialToken",
+          "STx"
+      );
+
+      (address wrapperAddress ,)= _host.getERC20Wrapper(IERC20(address(this)), "STx");
+      _stx = ISuperToken(wrapperAddress);
 
       _mint(address(this), totalSupply);
-      _transfer(address(this),msg.sender, 1000000*1**18);
+      approve(wrapperAddress, totalSupply);
+      // _approve(address(this), wrapperAddress, totalSupply);
+      _stx.upgrade(1);
+      // _stx.transfer(msg.sender, 1000000*1**18);
   }
 
 /**************************************************************************
