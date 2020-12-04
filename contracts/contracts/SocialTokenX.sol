@@ -1,6 +1,9 @@
 pragma solidity ^0.7.1;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC777/IERC777Recipient.sol";
+import "@openzeppelin/contracts/introspection/IERC1820Registry.sol";
+import "@openzeppelin/contracts/introspection/ERC1820Implementer.sol";
 
 import {
   ISuperfluid,
@@ -10,7 +13,19 @@ import {
   ISuperAgreement } from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol";
 import "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IConstantFlowAgreementV1.sol";
 
-contract SocialTokenX is ERC20, ISuperApp {
+contract SocialTokenX is ERC20, ISuperApp, IERC777Recipient, ERC1820Implementer {
+  event TokensReceivedCalled(
+      address operator,
+      address from,
+      address to,
+      uint256 amount,
+      bytes data,
+      bytes operatorData,
+      address token,
+      uint256 fromBalance,
+      uint256 toBalance
+  );
+
   using SafeMath for uint256;
 
   address payable public creator;
@@ -19,6 +34,9 @@ contract SocialTokenX is ERC20, ISuperApp {
   IConstantFlowAgreementV1 private _cfa;
   ISuperToken private _acceptedToken;
   ISuperToken private _stx;
+
+  bytes32 constant private _TOKENS_RECIPIENT_INTERFACE_HASH = keccak256("ERC777TokensRecipient");
+  IERC1820Registry private _erc1820 = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
 
   constructor(
       ISuperfluid host,
@@ -54,10 +72,63 @@ contract SocialTokenX is ERC20, ISuperApp {
       _stx = ISuperToken(wrapperAddress);
 
       _mint(address(this), totalSupply);
+      _approve(address(this), wrapperAddress, totalSupply);
       approve(wrapperAddress, totalSupply);
-      // _approve(address(this), wrapperAddress, totalSupply);
-      _stx.upgrade(1);
+      // _stx.upgrade(1);
       // _stx.transfer(msg.sender, 1000000*1**18);
+  }
+
+  function initialize() public {
+    _stx.upgrade(1);
+    // _stx.transfer(msg.sender, 1000000*1**18);
+  }
+
+  function getERC20Wrapper() public returns (address ERC20Wrapper) {
+    return address(_stx);
+  }
+
+  /**************************************************************************
+   * Enable contract to receive ERC777
+  *************************************************************************/
+
+  function recipientFor(address account) public {
+      _registerInterfaceForAddress(_TOKENS_RECIPIENT_INTERFACE_HASH, account);
+
+      address self = address(this);
+      if (account == self) {
+          registerRecipient(self);
+      }
+  }
+
+  function registerRecipient(address recipient) public {
+      _erc1820.setInterfaceImplementer(address(this), _TOKENS_RECIPIENT_INTERFACE_HASH, recipient);
+  }
+
+  function tokensReceived(
+      address operator,
+      address from,
+      address to,
+      uint256 amount,
+      bytes calldata userData,
+      bytes calldata operatorData
+  ) external override {
+      IERC777 token = IERC777(_msgSender());
+
+      uint256 fromBalance = token.balanceOf(from);
+      // when called due to burn, to will be the zero address, which will have a balance of 0
+      uint256 toBalance = token.balanceOf(to);
+
+      emit TokensReceivedCalled(
+          operator,
+          from,
+          to,
+          amount,
+          userData,
+          operatorData,
+          address(token),
+          fromBalance,
+          toBalance
+      );
   }
 
 /**************************************************************************
