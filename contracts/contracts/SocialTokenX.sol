@@ -36,11 +36,10 @@ contract SocialTokenX is ERC20, ISuperApp {
       _acceptedToken = acceptedToken;
 
       uint256 configWord =
-          SuperAppDefinitions.TYPE_APP_FINAL;
-          // SuperAppDefinitions.TYPE_APP_FINAL |
-          // SuperAppDefinitions.BEFORE_AGREEMENT_CREATED_NOOP |
-          // SuperAppDefinitions.BEFORE_AGREEMENT_UPDATED_NOOP |
-          // SuperAppDefinitions.BEFORE_AGREEMENT_TERMINATED_NOOP;
+          SuperAppDefinitions.TYPE_APP_FINAL |
+          SuperAppDefinitions.BEFORE_AGREEMENT_CREATED_NOOP |
+          SuperAppDefinitions.BEFORE_AGREEMENT_UPDATED_NOOP |
+          SuperAppDefinitions.BEFORE_AGREEMENT_TERMINATED_NOOP;
 
       _host.registerApp(configWord);
 
@@ -54,7 +53,7 @@ contract SocialTokenX is ERC20, ISuperApp {
 
      function beforeAgreementCreated(
          ISuperToken /*superToken*/,
-         bytes calldata /*ctx*/,
+         bytes calldata ctx /*ctx*/,
          address /*agreementClass*/,
          bytes32 /*agreementId*/
      )
@@ -64,22 +63,24 @@ contract SocialTokenX is ERC20, ISuperApp {
          override
          returns (bytes memory /*cbdata*/)
      {
-         revert("Unsupported callback - Before Agreement Created");
+          return ctx;
+         // revert("Unsupported callback - Before Agreement Created");
      }
 
       function afterAgreementCreated(
-        ISuperToken _superToken,
-        bytes calldata _ctx,
-        address _agreementClass,
+        ISuperToken _uperToken,
+        bytes calldata ctx,
+        address agreementClass,
         bytes32 agreementId,
         bytes calldata /*cbdata*/
     )
         external override
-        onlyExpected(_superToken, _agreementClass)
+        // onlyExpected(superToken, agreementClass)
         onlyHost
-        returns (bytes memory)
+        returns (bytes memory cbdata)
     {
-        revert("Unsupported callback - After Agreement Created");
+        return ctx;
+        // revert("Unsupported callback - After Agreement Created");
     }
 
     function beforeAgreementUpdated(
@@ -98,14 +99,14 @@ contract SocialTokenX is ERC20, ISuperApp {
     }
 
     function afterAgreementUpdated(
-        ISuperToken _superToken,
-        bytes calldata _ctx,
-        address _agreementClass,
+        ISuperToken superToken,
+        bytes calldata ctx,
+        address agreementClass,
         bytes32 agreementId,
         bytes calldata /*cbdata*/
     )
         external override
-        onlyExpected(_superToken, _agreementClass)
+        onlyExpected(superToken, agreementClass)
         onlyHost
         returns (bytes memory /*cbdata*/)
     {
@@ -114,7 +115,7 @@ contract SocialTokenX is ERC20, ISuperApp {
 
     function beforeAgreementTerminated(
         ISuperToken /*superToken*/,
-        bytes calldata /*ctx*/,
+        bytes calldata ctx,
         address /*agreementClass*/,
         bytes32 /*agreementId*/
     )
@@ -122,23 +123,23 @@ contract SocialTokenX is ERC20, ISuperApp {
         view
         virtual
         override
-        returns (bytes memory /*cbdata*/)
+        returns (bytes memory cbdata)
     {
-        revert("Unsupported callback -  Before Agreement Terminated");
+        return ctx;
     }
 
     function afterAgreementTerminated(
-        ISuperToken _superToken,
-        bytes calldata _ctx,
-        address _agreementClass,
-        bytes32 _agreementId,
+        ISuperToken superToken,
+        bytes calldata ctx,
+        address agreementClass,
+        bytes32 agreementId,
         bytes calldata /*cbdata*/
     )
         external override
         onlyHost
-          returns (bytes memory /*cbdata*/)
+        returns (bytes memory cbdata)
     {
-        revert("Unsupported callback - After Agreement Terminated");
+        return ctx;
     }
 
     function _isAcceptedToken(ISuperToken _superToken) private view returns (bool) {
