@@ -1,4 +1,4 @@
-pragma solidity ^0.7.1;
+pragma solidity ^0.7.4;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC777/IERC777Recipient.sol";
@@ -74,13 +74,15 @@ contract SocialTokenX is ERC20, ISuperApp, IERC777Recipient, ERC1820Implementer 
       _mint(address(this), totalSupply);
       _approve(address(this), wrapperAddress, totalSupply);
       approve(wrapperAddress, totalSupply);
-      // _stx.upgrade(1);
+      registerRecipient(address(this));
+      // _stx.upgrade(totalSupply);
       // _stx.transfer(msg.sender, 1000000*1**18);
   }
 
+  // TODO: figure out why this can't be done in constructor.
   function initialize() public {
-    _stx.upgrade(1);
-    // _stx.transfer(msg.sender, 1000000*1**18);
+    _stx.upgrade(totalSupply());
+    _stx.transfer(msg.sender, 1000000*1**18);
   }
 
   function getERC20Wrapper() public returns (address ERC20Wrapper) {
@@ -88,17 +90,8 @@ contract SocialTokenX is ERC20, ISuperApp, IERC777Recipient, ERC1820Implementer 
   }
 
   /**************************************************************************
-   * Enable contract to receive ERC777
+   * Enable contract to receive ERC777 (ie SuperToken)
   *************************************************************************/
-
-  function recipientFor(address account) public {
-      _registerInterfaceForAddress(_TOKENS_RECIPIENT_INTERFACE_HASH, account);
-
-      address self = address(this);
-      if (account == self) {
-          registerRecipient(self);
-      }
-  }
 
   function registerRecipient(address recipient) public {
       _erc1820.setInterfaceImplementer(address(this), _TOKENS_RECIPIENT_INTERFACE_HASH, recipient);
@@ -147,12 +140,13 @@ contract SocialTokenX is ERC20, ISuperApp, IERC777Recipient, ERC1820Implementer 
          override
          returns (bytes memory /*cbdata*/)
      {
+          // TODO: check that the contract has enough balance?
           return ctx;
          // revert("Unsupported callback - Before Agreement Created");
      }
 
       function afterAgreementCreated(
-        ISuperToken _uperToken,
+        ISuperToken superToken,
         bytes calldata ctx,
         address agreementClass,
         bytes32 agreementId,
@@ -161,8 +155,34 @@ contract SocialTokenX is ERC20, ISuperApp, IERC777Recipient, ERC1820Implementer 
         external override
         // onlyExpected(superToken, agreementClass)
         onlyHost
-        returns (bytes memory cbdata)
+        returns (bytes memory newCtx)
     {
+        address sender;
+        int96 flowRate;
+        (,,sender,,) = _host.decodeCtx(ctx);
+        (,flowRate,,) = _cfa.getFlowByID(superToken, agreementId);
+        _host.callAgreement(
+            _cfa,
+            abi.encodeWithSelector(
+                _cfa.createFlow.selector,
+                address(_stx),
+                sender,
+                flowRate,
+                new bytes(0)
+            )
+        );
+        // //
+        // (newCtx, ) = _host.callAgreementWithContext(
+        //     _cfa,
+        //     abi.encodeWithSelector(
+        //         _cfa.createFlow.selector,
+        //         _stx,
+        //         sender,
+        //         flowRate,
+        //         new bytes(0)
+        //     ),
+        //     newCtx
+        // );
         return ctx;
         // revert("Unsupported callback - After Agreement Created");
     }
@@ -192,9 +212,22 @@ contract SocialTokenX is ERC20, ISuperApp, IERC777Recipient, ERC1820Implementer 
         external override
         onlyExpected(superToken, agreementClass)
         onlyHost
-        returns (bytes memory /*cbdata*/)
+        returns (bytes memory newCtx)
     {
-        revert("Unsupported callback - After Agreement updated");
+      (,,address sender,,) = _host.decodeCtx(ctx);
+      (,int96 flowRate,,) = _cfa.getFlowByID(superToken, agreementId);
+      newCtx = ctx;
+      (newCtx, ) = _host.callAgreementWithContext(
+          _cfa,
+          abi.encodeWithSelector(
+              _cfa.updateFlow.selector,
+              superToken,
+              sender,
+              flowRate,
+              new bytes(0)
+          ),
+          newCtx
+      );
     }
 
     function beforeAgreementTerminated(
@@ -221,9 +254,22 @@ contract SocialTokenX is ERC20, ISuperApp, IERC777Recipient, ERC1820Implementer 
     )
         external override
         onlyHost
-        returns (bytes memory cbdata)
+        returns (bytes memory newCtx)
     {
-        return ctx;
+      address sender;
+      (,,sender,,) = _host.decodeCtx(ctx);
+      newCtx = ctx;
+      (newCtx, ) = _host.callAgreementWithContext(
+          _cfa,
+          abi.encodeWithSelector(
+              _cfa.deleteFlow.selector,
+              superToken,
+              sender,
+              new bytes(0)
+          ),
+          newCtx
+      );
+      // return ctx;
     }
 
     function _isAcceptedToken(ISuperToken _superToken) private view returns (bool) {

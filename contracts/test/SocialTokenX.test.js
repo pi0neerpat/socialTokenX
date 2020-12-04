@@ -61,27 +61,12 @@ contract('SocialTokenX', (accounts) => {
       daix.address,
       TOTAL_SUPPLY
     )
+    // Enable contract to receive ERC777
+    await web3tx(app.initialize, 'Initialize')()
 
     // Social Token wrapper
     const stxWrapper = await sf.getERC20Wrapper(app)
     stx = await sf.contracts.ISuperToken.at(stxWrapper.wrapperAddress)
-
-    // Enable contract to receive ERC777
-    // await stx.registerRecipient(app.address)
-    await web3tx(app.registerRecipient, 'registerRecipient')(app.address)
-    // await web3tx(
-    //   stx.registerRecipient,
-    //   `Register SuperApp as ERC777 recipient`
-    // )(app.address, {
-    //   from: creator,
-    // })
-
-    await web3tx(
-      app.initialize,
-      `Initialize SocialTokenX`
-    )({
-      from: creator,
-    })
 
     for (let i = 1; i < accounts.length; ++i) {
       await web3tx(dai.approve, `Account ${i} approves daix`)(
@@ -110,38 +95,11 @@ contract('SocialTokenX', (accounts) => {
       availableBalance: stxBalance,
     } = await stx.realtimeBalanceOfNow.call(account)
     return console.log(
-      `${label} daix rtb: ${wad4human(daixBalance)}  stx rtb: ${wad4human(
-        stxBalance
-      )}`
+      `========================\n${label} daix rtb: ${wad4human(
+        daixBalance
+      )}  stx rtb: ${wad4human(stxBalance)}\n========================`
     )
   }
-
-  // const purchaseTokens = async (amount) => {
-  //   console.log(
-  //     `======= New purchase =======`
-  //   )
-  //     await web3tx(app.bid, `${bid.label} bids ${bid.amount}`)(
-  //       toWad(bid.amount),
-  //       { from: bid.account }
-  //     )
-  //   let timeLeft = await app.checkTimeRemaining()
-  //   time.increase(timeLeft + 1)
-  //   console.log('---AUCTION ENDED---')
-  //   await printRealtimeBalance('Auction revenue generated', app.address)
-  //   await web3tx(
-  //     app.settleAndBeginAuction,
-  //     `Bob settles the auction`
-  //   )({ from: bob })
-  //   console.log('---AUCTION SETTLED---')
-  //   await printRealtimeBalance('Auction', app.address)
-  //   await printRealtimeBalance('Creator', creator)
-  //   await printRealtimeBalance('Bob', bob)
-  //   await printShares('Bob', bob)
-  //   await printRealtimeBalance('Carol', carol)
-  //   await printShares('Carol', carol)
-  //   await printRealtimeBalance('Dan', dan)
-  //   await printShares('Dan', dan)
-  // }
 
   it('will deploy', async () => {
     await printRealtimeBalance('App', app.address)
@@ -163,7 +121,7 @@ contract('SocialTokenX', (accounts) => {
     assert.equal((await stx.balanceOf(bob)).toString(), 100)
   })
 
-  it.skip('can turn on flow', async () => {
+  it('can turn on flow', async () => {
     await printRealtimeBalance('Carol', carol)
     await sf.host.callAgreement(
       sf.agreements.cfa.address,
@@ -179,7 +137,7 @@ contract('SocialTokenX', (accounts) => {
     assert.isBelow(Number(wad4human(availableBalance)), INITIAL_DAIX_BALANCE)
   })
 
-  it.skip('can turn off flow', async () => {
+  it('can turn off flow', async () => {
     await traveler.advanceTimeAndBlock(TEST_TRAVEL_TIME)
     await sf.host.callAgreement(
       sf.agreements.cfa.address,
@@ -201,7 +159,7 @@ contract('SocialTokenX', (accounts) => {
     assert.equal(wad4human(before), wad4human(after))
   })
 
-  it.skip('earns tokens from flow', async () => {
+  it('earns tokens from flow', async () => {
     await printRealtimeBalance('Dan', dan)
     assert.equal((await app.balanceOf(dan)).toString(), 0)
     await sf.host.callAgreement(
@@ -223,11 +181,16 @@ contract('SocialTokenX', (accounts) => {
         from: dan,
       }
     )
+    await printRealtimeBalance('Creator', creator)
     await printRealtimeBalance('Dan', dan)
     const { availableBalance } = await daix.realtimeBalanceOfNow.call(dan)
     assert.isBelow(Number(wad4human(availableBalance)), INITIAL_DAIX_BALANCE)
 
-    console.log((await app.balanceOf(dan)).toString())
-    assert.isAbove(Number((await app.balanceOf(dan)).toString()), 0)
+    const {
+      availableBalance: stxAvailableBalance,
+    } = await daix.realtimeBalanceOfNow.call(dan)
+    console.log((await stx.balanceOf(dan)).toString())
+    assert.isAbove(Number(wad4human(stxAvailableBalance)), 0)
+    // assert.isAbove(Number((await app.balanceOf(dan)).toString()), 0)
   })
 })
